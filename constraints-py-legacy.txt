@@ -1,0 +1,23 @@
+# Constraints applied when building for Python 3.7 / 3.8.
+#
+# Our linux-arm toolchain runs on Raspbian Buster (glibc 2.28) and has no
+# Rust installed. Several modern Python packages have rewritten to Rust
+# and stopped publishing prebuilt armv7 wheels for older Python versions,
+# forcing pip to attempt a source build. Modern source builds use maturin,
+# which auto-bootstraps Rust via puccinialin -- but puccinialin requires
+# Python >=3.9, so the install aborts on our 3.7/3.8 build matrix entries.
+#
+# jsonschema: starting with 4.18 the project replaced its pure-Python
+# pyrsistent dependency with rpds-py, a Rust-backed package. rpds-py
+# 0.21+ dropped cp38 armv7 wheels, so on linux-arm + 3.8 there is no
+# usable wheel and pip falls through to a Rust source build. Pinning
+# jsonschema < 4.18 keeps us on the pyrsistent-backed lineage, which is
+# pure Python and builds anywhere.
+jsonschema<4.18
+#
+# Defensive pins for packages that have hit the same Rust source-build
+# trap in transitive contexts. Neither is currently a direct dependency,
+# but the toolchain limitations that make them problematic apply equally
+# to any future addition.
+cryptography<46
+rpds-py<0.21

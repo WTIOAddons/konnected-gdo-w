@@ -1,0 +1,80 @@
+{
+  "author": "wfahle",
+  "description": "Konnected Garage Door Opener (GDO White) addon for WebThings Gateway",
+  "gateway_specific_settings": {
+    "webthings": {
+      "exec": "python3 {path}/main.py",
+      "primary_type": "adapter",
+      "strict_max_version": "*",
+      "strict_min_version": "0.10.0"
+    }
+  },
+  "homepage_url": "https://github.com/WTIOAddons/konnected-gdo-w",
+  "id": "konnected-gdo-w",
+  "license": "MPL-2.0",
+  "manifest_version": 1,
+  "name": "Konnected GDO White",
+  "options": {
+    "default": {
+      "log_level": "WARNING",
+      "discover": true,
+      "poll_interval": 30,
+      "devices": []
+    },
+    "schema": {
+      "description": "Configuration for the Konnected GDO White adapter",
+      "type": "object",
+      "properties": {
+        "log_level": {
+          "description": "Log level. Use WARNING as standard",
+          "type": "string",
+          "enum": [
+            "WARNING",
+            "INFO",
+            "DEBUG"
+          ]
+        },
+        "discover": {
+          "description": "Automatically discover GDO devices on the local network using mDNS (_konnected._tcp)",
+          "type": "boolean"
+        },
+        "poll_interval": {
+          "description": "Seconds between REST health polls. Live updates arrive over the device's event stream; this is only a fallback.",
+          "type": "integer",
+          "minimum": 5,
+          "maximum": 600
+        },
+        "devices": {
+          "title": "Manually configured devices",
+          "description": "GDO devices to add by address. Not needed when discovery finds the device.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "description": "A Konnected GDO White device",
+            "required": [
+              "host"
+            ],
+            "properties": {
+              "host": {
+                "description": "IP address or hostname of the device (e.g. 192.168.1.50 or konnected-abc123.local)",
+                "type": "string"
+              },
+              "port": {
+                "description": "HTTP port of the device web server (default 80)",
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535
+              },
+              "name": {
+                "description": "Optional title for the Thing (default: Garage Door <device id>)",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "short_name": "GDO White",
+  "version": "0.1.0"
+}

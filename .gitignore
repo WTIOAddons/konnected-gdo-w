@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+lib/
+package/
+*.tgz
+*.tgz.sha256sum
+SHA256SUMS
+.idea/
+.venv/
+venv/

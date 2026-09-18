@@ -1,0 +1,43 @@
+{
+  "name": "konnected-gdo-w",
+  "display_name": "Konnected GDO White",
+  "version": "0.1.0",
+  "description": "Konnected Garage Door Opener (GDO White) addon for WebThings Gateway",
+  "author": "wfahle",
+  "main": "main.py",
+  "keywords": [
+    "mozilla",
+    "webthings",
+    "iot",
+    "adapter",
+    "konnected",
+    "garage",
+    "esphome"
+  ],
+  "homepage": "https://github.com/WTIOAddons/konnected-gdo-w",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WTIOAddons/konnected-gdo-w"
+  },
+  "bugs": {
+    "url": "https://github.com/WTIOAddons/konnected-gdo-w/issues"
+  },
+  "files": [
+    "LICENSE",
+    "SHA256SUMS",
+    "lib",
+    "main.py",
+    "package.json",
+    "manifest.json",
+    "pkg/__init__.py",
+    "pkg/config.py",
+    "pkg/entities.py",
+    "pkg/gdo_client.py",
+    "pkg/gdo_adapter.py",
+    "pkg/gdo_device.py",
+    "pkg/gdo_property.py",
+    "pkg/mdns.py",
+    "README.md"
+  ]
+}
