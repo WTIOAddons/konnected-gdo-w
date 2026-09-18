@@ -179,3 +179,19 @@ class DeviceLiveTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class CoercionTests(unittest.TestCase):
+
+    def test_to_float_drops_non_finite(self):
+        from pkg.gdo_device import _to_float
+        # ESPHome reports an out-of-range sensor as NaN.
+        self.assertIsNone(_to_float({'value': float('nan'),
+                                     'state': 'NaN m'}))
+        self.assertIsNone(_to_float({'state': 'nan m'}))
+        self.assertIsNone(_to_float({'value': float('inf')}))
+        self.assertIsNone(_to_float({'value': None, 'state': 'NA'}))
+        self.assertIsNone(_to_float({}))
+        self.assertEqual(_to_float({'value': 1.23}), 1.23)
+        self.assertEqual(_to_float({'state': '0.35 m'}), 0.35)
+        self.assertEqual(_to_float({'value': 7}), 7.0)

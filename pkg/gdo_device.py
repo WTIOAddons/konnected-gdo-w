@@ -1,6 +1,7 @@
 """Device for the Konnected GDO White addon for WebThings Gateway."""
 
 import logging
+import math
 import threading
 import time
 
@@ -35,14 +36,23 @@ def _to_bool(payload):
 
 
 def _to_float(payload):
+    """Numeric reading from a payload, or None when there is none.
+
+    ESPHome reports an unavailable sensor (for example the range sensor
+    when nothing is within reach) as NaN. That is not valid JSON on the
+    way to the gateway, so it is treated as no reading.
+    """
     value = payload.get('value')
-    if isinstance(value, (int, float)):
-        return float(value)
-    state = str(payload.get('state', '')).strip().split(' ')[0]
-    try:
-        return float(state)
-    except ValueError:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        state = str(payload.get('state', '')).strip().split(' ')[0]
+        try:
+            value = float(state)
+        except ValueError:
+            return None
+    value = float(value)
+    if math.isnan(value) or math.isinf(value):
         return None
+    return value
 
 
 def _to_str(payload):
