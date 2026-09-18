@@ -218,11 +218,11 @@ class GdoEventStream(threading.Thread):
         self.on_state = on_state
         self.on_alive = on_alive or (lambda: None)
         self.on_disconnect = on_disconnect or (lambda reason: None)
-        self._stop = threading.Event()
+        self._stop_event = threading.Event()
         self._response = None
 
     def stop(self):
-        self._stop.set()
+        self._stop_event.set()
         resp = self._response
         if resp is not None:
             try:
@@ -237,12 +237,12 @@ class GdoEventStream(threading.Thread):
 
     def run(self):
         delay = SSE_RETRY_MIN
-        while not self._stop.is_set():
+        while not self._stop_event.is_set():
             try:
                 self._follow()
                 delay = SSE_RETRY_MIN
             except Exception as ex:
-                if self._stop.is_set():
+                if self._stop_event.is_set():
                     break
                 logging.info('Event stream from %s dropped: %s',
                              self.client.host, ex)
@@ -250,7 +250,7 @@ class GdoEventStream(threading.Thread):
                     self.on_disconnect(str(ex))
                 except Exception:
                     logging.exception('on_disconnect failed')
-            if self._stop.wait(delay):
+            if self._stop_event.wait(delay):
                 break
             delay = min(delay * 2, SSE_RETRY_MAX)
         logging.debug('Event stream thread for %s finished',
@@ -271,7 +271,7 @@ class GdoEventStream(threading.Thread):
             logging.info('Event stream connected to %s', self.client.host)
             delay_reset_at = time.time()
             for event, data in parse_sse(self._alive_lines(resp)):
-                if self._stop.is_set():
+                if self._stop_event.is_set():
                     return
                 if event in (None, 'state'):
                     self._handle_state(data)
